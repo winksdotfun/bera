@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/earn/HeroSection";
 import StakingCard from "@/components/earn/StakingCard";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 
 export default function Home() {
@@ -39,9 +40,20 @@ export default function Home() {
   }
 
   if (!statsData) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col h-screen justify-center items-center bricolage-font">
+        <Image
+          src="https://ext.same-assets.com/2446876795/1753465442.svg"
+          width={50}
+          height={50}
+          className="animate-spin"
+          alt="stBGT"
+        />
+        <p>Loading...</p>
+      </div>
+    );
   }
-
+  
 
   const apr = statsData.stbgt_staking_apr;
   const formattedApr = Number(apr).toFixed(2);
