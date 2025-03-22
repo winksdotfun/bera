@@ -35,7 +35,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen items-center">
+    <main className="flex min-h-screen items-center bricolage-font">
 
           <div className="mx-auto">
             <HeroSection />

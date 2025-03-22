@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Earn yield • Stride stBGT",
   description: "Unlock and leverage your BGT with stBGT",
+  icons: "https://ext.same-assets.com/2446876795/1753465442.svg"
 };
 
 export default function RootLayout({
