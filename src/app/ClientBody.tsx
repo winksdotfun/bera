@@ -3,6 +3,16 @@
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import {
+  ConnectButton,
+  getDefaultConfig,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
+import { berachain } from "wagmi/chains";
+
+
 export default function ClientBody({
   children,
   className,
@@ -16,9 +26,26 @@ export default function ClientBody({
     document.body.className = "antialiased";
   }, []);
 
+  const config = getDefaultConfig({
+    appName: "My RainbowKit App",
+    projectId: "YOUR_PROJECT_ID",
+    chains: [berachain],
+    ssr: true,
+  });
+
+  const queryClient = new QueryClient();
+
+
   return (
     <body className={cn("antialiased", className)} suppressHydrationWarning>
-      {children}
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider chains={[berachain]}>
+
+            {children}
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </body>
   );
 }
