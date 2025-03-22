@@ -17,7 +17,7 @@
     --card-foreground: 0 0% 100%;
     --popover: 330 73% 13%;
     --popover-foreground: 0 0% 100%;
-    --primary: 330 56% 70%; /* Pink accent */
+    --primary: 330 56% 70%; 
     --primary-foreground: 0 0% 100%;
     --secondary: 330 33% 23%;
     --secondary-foreground: 0 0% 100%;
@@ -80,5 +80,8 @@
   .gradient-border {
     @apply relative rounded-lg border-2 border-[#52162f];
     background: linear-gradient(to bottom, rgba(122, 62, 86, 0.3), rgba(47, 4, 21, 0.1));
+  }
+  .card-bg{
+    background: #3C001D;
   }
 }

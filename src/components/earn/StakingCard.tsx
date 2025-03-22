@@ -1,11 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import CustomButton from "@/provider/Wallet";
+import StakeModal from "../modals/Stake"
+import { useAccount } from "wagmi";
+import { useState } from "react";
+import Modal from 'react-modal'
+
 
 interface StakingCardProps {
   title: string;
   description: string;
-  apr: number;
+  apr: any;
   poolValue: number;
   rewardType: string;
   rewardIcon: string;
@@ -27,6 +33,13 @@ const StakingCard = ({
   userBalanceLabel,
   beraPriceUSD
 }: StakingCardProps) => {
+
+  const { isConnected } = useAccount();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onClose = () =>{
+    setIsModalOpen(false);
+  }
   return (
     <Card className="gradient-border overflow-hidden">
       <CardHeader className="pb-2">
@@ -82,11 +95,26 @@ const StakingCard = ({
               <p className="text-sm text-muted-foreground/70">{userBalanceLabel}</p>
             </div>
           </div>
-          <Button className="bg-primary hover:bg-primary/90 text-foreground">
-            Connect wallet
-          </Button>
+          {isConnected ? (
+            <Button
+              className="bg-[#e50571] w-40 text-foreground"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Stake
+            </Button>
+          ) : (
+            <CustomButton />
+          )}
         </div>
       </CardContent>
+
+      {isModalOpen &&
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <StakeModal onClose={onClose} />
+      </div>
+      }
+     
+
     </Card>
   );
 };

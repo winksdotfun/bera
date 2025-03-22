@@ -5,6 +5,7 @@ import HeroSection from "@/components/earn/HeroSection";
 import StakingCard from "@/components/earn/StakingCard";
 import { useEffect, useState } from "react";
 
+
 export default function Home() {
 
   interface StatsData {
