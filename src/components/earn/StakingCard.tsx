@@ -2,11 +2,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import CustomButton from "@/provider/Wallet";
-import StakeModal from "../modals/Stake"
-import { useAccount } from "wagmi";
-import { useState } from "react";
-import Modal from 'react-modal'
-
+import StakeModal from "../modals/Stake";
+import { useAccount, usePublicClient } from "wagmi";
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
 
 interface StakingCardProps {
   title: string;
@@ -34,12 +33,47 @@ const StakingCard = ({
   beraPriceUSD
 }: StakingCardProps) => {
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stBgtBalance, setStBgtBalance] = useState('');
 
-  const onClose = () =>{
+  const onClose = () => {
     setIsModalOpen(false);
   }
+
+  const publicClient = usePublicClient();
+
+  useEffect(() => {
+    const fetchBalances = async () => {
+      if (!address) return;
+
+      try {
+        // Fetch stMON balance
+        const stBgtBalance = await publicClient.readContract({
+          address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+          abi: [
+            {
+              name: "balanceOf",
+              type: "function",
+              stateMutability: "view",
+              inputs: [{ name: "account", type: "address" }],
+              outputs: [{ name: "", type: "uint256" }],
+            },
+          ],
+          functionName: "balanceOf",
+          args: [address],
+        });
+
+        setStBgtBalance(ethers.utils.formatUnits(stBgtBalance as bigint, 18));
+        console.log(stBgtBalance);
+      } catch (error) {
+        console.error("Error fetching balances:", error);
+      }
+    };
+
+    fetchBalances();
+  }, [address]);
+
   return (
     <Card className="gradient-border overflow-hidden">
       <CardHeader className="pb-2">
@@ -89,7 +123,7 @@ const StakingCard = ({
                   className={`w-6 h-6 ${index > 0 ? '-ml-2' : ''}`}
                 />
               ))}
-              <p className="text-2xl font-bold text-[#e50571]">{userBalance}</p>
+              <p className="text-2xl font-bold text-[#e50571]">{stBgtBalance}</p>
             </div>
             <div className="">
               <p className="text-sm text-muted-foreground/70">{userBalanceLabel}</p>
@@ -110,7 +144,7 @@ const StakingCard = ({
 
       {isModalOpen &&
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <StakeModal onClose={onClose} beraPriceUSD={beraPriceUSD} />
+        <StakeModal onClose={onClose} beraPriceUSD={beraPriceUSD} stBgtBalance={stBgtBalance} />
       </div>
       }
      
