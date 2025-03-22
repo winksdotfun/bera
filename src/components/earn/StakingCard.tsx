@@ -110,7 +110,7 @@ const StakingCard = ({
 
       {isModalOpen &&
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <StakeModal onClose={onClose} />
+        <StakeModal onClose={onClose} beraPriceUSD={beraPriceUSD} />
       </div>
       }
      
