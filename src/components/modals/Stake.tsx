@@ -19,6 +19,10 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
+  const [txCompleted, setTxCompleted] = useState(false);
+  const [txHash, setTxHash] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except for decimal point
@@ -50,8 +54,12 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const handleStakeClick = async (
     amount: any,
   ) => {
+
     setIsStaking(true);
+    setErrorMessage("");
     console.log(address, "amount", inputValue)
+    let txHash = "";
+
     try {
       const tx = await writeContractAsync({
         address: "0x3B1B37228288c35e8caa1985D583080BEBf1CCD8", // The proxy contract address
@@ -61,12 +69,29 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
         chain: berachain,
         account: address as `0x${string}`,
       });
+      txHash = tx;
       await publicClient.waitForTransactionReceipt({ hash: tx });
+      setTxHash(txHash);
     }
     catch (error) {
       console.error("Error:", error);
+      // Extract a user-friendly error message
+      let errorMsg = "Transaction failed";
+      if (error instanceof Error) {
+        // Try to extract a more specific message
+        if (error.message.includes("user rejected transaction")) {
+          errorMsg = "Transaction rejected by user";
+        } else if (error.message.includes("insufficient funds")) {
+          errorMsg = "Insufficient funds for gas";
+        } else {
+          // Get the most relevant part of the error
+          errorMsg = `Error: ${error.message.split('\n')[0]}`;
+        }
+      }
+      setErrorMessage(errorMsg);
     } finally {
       setIsStaking(false);
+      setTxCompleted(!!txHash);
     }
   };
 
@@ -104,10 +129,16 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           </div>
           <Button
             className='bg-[#e50571] w-full mt-2 text-foreground'
-            disabled={!isValidInput || insufficientBalance || isStaking}
-            onClick={handleStakeClick}
+            disabled={!isValidInput || insufficientBalance || (isStaking && !txCompleted)}
+            onClick={txCompleted ? () => window.open(`https://berascan.com/tx/${txHash}`, '_blank') : handleStakeClick}
           >
-            {insufficientBalance ? 'Insufficient Balance' : 'Stake'}
+            {insufficientBalance
+              ? 'Insufficient Balance'
+              : isStaking
+                ? 'Processing Transaction...'
+                : txCompleted
+                  ? 'View Transaction'
+                  : 'Stake'}
           </Button>
           <Button
             className='bg-[#e50571] w-full mt-2 text-foreground'
@@ -116,6 +147,11 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           >
             {isStaking ? 'Processing' : 'Stake'}
           </Button>
+          {errorMessage && (
+            <div className="text-red-500 mt-2 mb-2 text-sm text-center">
+              {errorMessage}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
