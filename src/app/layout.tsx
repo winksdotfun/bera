@@ -13,9 +13,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Define base URL and player URL
+const baseUrl = "https://berastake.winks.fun";
+const playerUrl = "https://berastake.winks.fun"; // Add your actual player URL here
+
 export const metadata: Metadata = {
-  title: "Earn yield • Stride stBGT",
-  description: "Unlock and leverage your BGT with stBGT",
+  title: " unlock and leverage your BGT with stBGT",
+  description: "Get the best yield in the Berachain ecosystem",
+  metadataBase: new URL(baseUrl),
+  openGraph: {
+    title: "unlock and leverage your BGT with stBGT",
+    description: "Get the best yield in the Berachain ecosystem",
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1739442596/rq0wjymypjel3pg6xziu.png"],
+  },
+  twitter: {
+    card: "player",
+    site: "@winksdotfun",
+    title: "unlock and leverage your BGT with stBGT",
+    description: "Get the best yield in the Berachain ecosystem",
+    images: ["https://ext.same-assets.com/2446876795/1753465442.svg"],
+  },
+  other: {
+    "twitter:player": playerUrl,
+    "twitter:player:width": "360",
+    "twitter:player:height": "560",
+  },
   icons: "https://ext.same-assets.com/2446876795/1753465442.svg"
 };
 
