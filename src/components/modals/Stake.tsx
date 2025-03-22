@@ -33,7 +33,7 @@ const Stake = ({ onClose }: Props) => {
                             <p className='text-muted-foreground/70 text-end'>~$0</p>
                         </div>
                     </div>
-                    <Button>Stake</Button>
+                    <Button className=' bg-[#e50571] w-full mt-2 text-foreground'>Stake</Button>
                 </CardContent>
             </Card>
         </div>
