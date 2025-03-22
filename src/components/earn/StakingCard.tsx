@@ -5,13 +5,14 @@ import Image from "next/image";
 interface StakingCardProps {
   title: string;
   description: string;
-  apr: string;
-  poolValue: string;
+  apr: number;
+  poolValue: number;
   rewardType: string;
   rewardIcon: string;
   tokenIcons: string[];
   userBalance: string;
   userBalanceLabel: string;
+  beraPriceUSD: number
 }
 
 const StakingCard = ({
@@ -24,6 +25,7 @@ const StakingCard = ({
   tokenIcons,
   userBalance,
   userBalanceLabel,
+  beraPriceUSD
 }: StakingCardProps) => {
   return (
     <Card className="gradient-border overflow-hidden">
@@ -36,11 +38,11 @@ const StakingCard = ({
 
       <div className="grid grid-cols-3 gap-4 px-6 py-4 border-t border-b border-border/20">
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-[#e50571]">{apr}</p>
+          <p className="text-2xl font-bold text-[#e50571]">{apr}%</p>
           <p className="text-xs uppercase font-medium text-muted-foreground/70">APR</p>
         </div>
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-[#e50571]">{poolValue}</p>
+          <p className="text-2xl font-bold text-[#e50571]">${poolValue}</p>
           <p className="text-xs font-medium text-muted-foreground/70">{
             rewardType === "Points" ? "Pool liquidity" : "Total stBGT staked"
           }</p>
