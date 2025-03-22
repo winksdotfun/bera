@@ -53,12 +53,12 @@ export default function Home() {
       </div>
     );
   }
-  
+
 
   const apr = statsData.stbgt_staking_apr;
   const formattedApr = Number(apr).toFixed(2);
 
-  function formatToK(value:any) {
+  function formatToK(value: any) {
     if (value >= 1000) {
       return (value / 1000).toFixed(2) + 'K';
     }
@@ -92,6 +92,7 @@ export default function Home() {
       <div className="mx-auto">
         <HeroSection />
         <StakingCard {...stakeStBGTData} />
+        <p className=" pt-2 text-center">Powered by winks.fun</p>
       </div>
 
     </main>
