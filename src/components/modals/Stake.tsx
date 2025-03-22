@@ -3,6 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import { useAccount, usePublicClient, useWriteContract } from "wagmi";
+import contractABI from "@/abi/contractABI.json"
+import { sepolia, berachain } from 'viem/chains';
+
 
 type Props = {
   onClose: () => void;
@@ -14,6 +18,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
+  const [isStaking, setIsStaking] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except for decimal point
@@ -36,6 +41,36 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
       setInsufficientBalance(false);
     }
   }, [totalValue, stBgtBalance, isValidInput]);
+
+  const { writeContractAsync } = useWriteContract();
+  const publicClient = usePublicClient();
+  const { address } = useAccount();
+
+
+  const handleStakeClick = async (
+    amount: any,
+  ) => {
+    setIsStaking(true);
+    console.log(address, "amount", inputValue)
+    try {
+      const tx = await writeContractAsync({
+        address: "0x3B1B37228288c35e8caa1985D583080BEBf1CCD8", // The proxy contract address
+        abi: contractABI, // You need the ABI of the implementation contract
+        functionName: "stake",
+        args: [inputValue], // Your stake amount
+        chain: berachain,
+        account: address as `0x${string}`,
+      });
+      await publicClient.waitForTransactionReceipt({ hash: tx });
+    }
+    catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsStaking(false);
+    }
+  };
+
+
 
   return (
     <div className='w-[450px]'>
@@ -69,9 +104,17 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           </div>
           <Button
             className='bg-[#e50571] w-full mt-2 text-foreground'
-            disabled={!isValidInput || insufficientBalance}
+            disabled={!isValidInput || insufficientBalance || isStaking}
+            onClick={handleStakeClick}
           >
             {insufficientBalance ? 'Insufficient Balance' : 'Stake'}
+          </Button>
+          <Button
+            className='bg-[#e50571] w-full mt-2 text-foreground'
+            onClick={handleStakeClick}
+            disabled={isStaking}
+          >
+            {isStaking ? 'Processing' : 'Stake'}
           </Button>
         </CardContent>
       </Card>
