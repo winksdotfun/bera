@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-import contractABI from "@/abi/contractABI.json"
+import contractABI from "@/abi/contractABI.json";
+import approvalContractABI from "@/abi/stBGTcontractABI.json"
 import { sepolia, berachain } from 'viem/chains';
 import { ethers } from 'ethers';
 
@@ -19,7 +20,8 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
-  const [isStaking, setIsStaking] = useState(false);
+  const [approvalProcessing, setApprovalProcessing] = useState(false);
+  const [isTransactionProcessing, setIsTransactionProcessing] = useState(false);
   const [txCompleted, setTxCompleted] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,29 +54,46 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const { address } = useAccount();
 
 
-  const handleStakeClick = async (
-    amount: any,
-  ) => {
-
-    setIsStaking(true);
+  const handleStakeClick = async (amount: any) => {
+    setApprovalProcessing(true); 
     setErrorMessage("");
-    console.log(address, "amount", inputValue)
+    console.log(address, "amount", inputValue);
+  
     let txHash = "";
-
+  
     try {
-      const tx = await writeContractAsync({
-        address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a", // The proxy contract address
-        abi: contractABI, // You need the ABI of the implementation contract
-        functionName: "stake",
-        args: [ethers.utils.parseEther(inputValue)], // Your stake amount
+      // First, execute the approval contract
+      const approvalTx = await writeContractAsync({
+        address: "0x2CeC7f1ac87F5345ced3D6c74BBB61bfAE231Ffb",
+        abi: approvalContractABI,
+        functionName: "approve",
+        args: [
+          "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+          ethers.utils.parseEther(inputValue),
+        ],
         chain: berachain,
         account: address as `0x${string}`,
       });
-      txHash = tx;
-      await publicClient.waitForTransactionReceipt({ hash: tx });
+  
+      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+      setApprovalProcessing(false); // Approval is done
+  
+      // After approval, execute the stake contract
+      setIsTransactionProcessing(true); // New state to track transaction processing
+      const stakeTx = await writeContractAsync({
+        address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+        abi: contractABI,
+        functionName: "stake",
+        args: [ethers.utils.parseEther(inputValue)],
+        chain: berachain,
+        account: address as `0x${string}`,
+      });
+  
+      txHash = stakeTx;
+      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      setIsTransactionProcessing(false); // Transaction is done
       setTxHash(txHash);
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error:", error);
       // Extract a user-friendly error message
       let errorMsg = "Transaction failed";
@@ -90,11 +109,14 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
         }
       }
       setErrorMessage(errorMsg);
+      setApprovalProcessing(false);
     } finally {
-      setIsStaking(false);
       setTxCompleted(!!txHash);
     }
   };
+
+
+  const buttonDisabled = !isValidInput || insufficientBalance ;
 
 
 
@@ -120,7 +142,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
             <div className="">
               <input
                 type="text"
-                className='bg-transparent focus:outline-none w-12 text-end text-lg font-semibold'
+                className='bg-transparent focus:outline-none w-full text-end text-lg font-semibold'
                 placeholder='0.0'
                 value={inputValue}
                 onChange={handleInputChange}
@@ -130,24 +152,33 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           </div>
           <Button
             className='bg-[#e50571] w-full mt-2 text-foreground'
-            disabled={!isValidInput || insufficientBalance || (isStaking && !txCompleted)}
+            disabled={buttonDisabled}
             onClick={txCompleted ? () => window.open(`https://berascan.com/tx/${txHash}`, '_blank') : handleStakeClick}
           >
             {insufficientBalance
               ? 'Insufficient Balance'
-              : isStaking
-                ? 'Processing Transaction...'
-                : txCompleted
-                  ? 'View Transaction'
-                  : 'Stake'}
+              : approvalProcessing
+                ? <div className="flex items-center">
+                  <Loader2 className="animate-spin mr-2" size={16} />
+                  Processing Approval...
+                </div>
+                : isTransactionProcessing
+                  ? <div className="flex items-center">
+                    <Loader2 className="animate-spin mr-2" size={16} />
+                    Processing Transaction...
+                  </div>
+                  : txCompleted
+                    ? 'View Transaction'
+                    : 'Stake'
+            }
           </Button>
-          <Button
+          {/* <Button
             className='bg-[#e50571] w-full mt-2 text-foreground'
             onClick={handleStakeClick}
             disabled={isStaking}
           >
             {isStaking ? 'Processing' : 'Stake'}
-          </Button>
+          </Button> */}
           {errorMessage && (
             <div className="text-red-500 mt-2 mb-2 text-sm text-center">
               {errorMessage}
