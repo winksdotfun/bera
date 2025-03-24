@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import contractABI from "@/abi/contractABI.json"
 import { sepolia, berachain } from 'viem/chains';
+import { ethers } from 'ethers';
 
 
 type Props = {
@@ -62,10 +63,10 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
 
     try {
       const tx = await writeContractAsync({
-        address: "0x3B1B37228288c35e8caa1985D583080BEBf1CCD8", // The proxy contract address
+        address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a", // The proxy contract address
         abi: contractABI, // You need the ABI of the implementation contract
         functionName: "stake",
-        args: [inputValue], // Your stake amount
+        args: [ethers.utils.parseEther(inputValue)], // Your stake amount
         chain: berachain,
         account: address as `0x${string}`,
       });

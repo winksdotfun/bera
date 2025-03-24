@@ -50,7 +50,7 @@ const StakingCard = ({
       try {
         // Fetch stMON balance
         const stBgtBalance = await publicClient.readContract({
-          address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+          address: "0x2CeC7f1ac87F5345ced3D6c74BBB61bfAE231Ffb",
           abi: [
             {
               name: "balanceOf",
