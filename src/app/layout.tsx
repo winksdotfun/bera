@@ -24,21 +24,21 @@ export const metadata: Metadata = {
   openGraph: {
     title: "unlock and leverage your BGT with stBGT",
     description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1739442596/rq0wjymypjel3pg6xziu.png"],
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
     title: "unlock and leverage your BGT with stBGT",
     description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://ext.same-assets.com/2446876795/1753465442.svg"],
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
   },
   other: {
     "twitter:player": playerUrl,
     "twitter:player:width": "360",
     "twitter:player:height": "560",
   },
-  icons: "https://ext.same-assets.com/2446876795/1753465442.svg"
+  icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"
 };
 
 export default function RootLayout({
