@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import contractABI from "@/abi/contractABI.json";
-import approvalContractABI from "@/abi/stBGTcontractABI.json"
+import approvalContractABI from "@/abi/iBGTcontractABI.json"
 import { berachain } from 'viem/chains';
 import { ethers } from 'ethers';
+import { Loader2 } from "lucide-react";
 
 
 interface Props { }
@@ -94,12 +95,13 @@ const IBGTPage = ({ }: Props) => {
 
     try {
       // First, execute the approval contract
+      console.log(inputValue,"i/p")
       const approvalTx = await writeContractAsync({
-        address: "0x2CeC7f1ac87F5345ced3D6c74BBB61bfAE231Ffb",
+        address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
         abi: approvalContractABI,
         functionName: "approve",
         args: [
-          "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+          "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
           ethers.utils.parseEther(inputValue),
         ],
         chain: berachain,
@@ -112,7 +114,7 @@ const IBGTPage = ({ }: Props) => {
       // After approval, execute the stake contract
       setIsTransactionProcessing(true); // New state to track transaction processing
       const stakeTx = await writeContractAsync({
-        address: "0xC03226d5d68FEaDa37E0328b2B954acB579a3C9a",
+        address: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
         abi: contractABI,
         functionName: "stake",
         args: [ethers.utils.parseEther(inputValue)],
@@ -174,6 +176,8 @@ const IBGTPage = ({ }: Props) => {
   };
 
   const formatTVL = (tvl: number) => (tvl / 1_000_000).toFixed(2);
+  const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;
+
 
   if (!statsData) {
     return (
@@ -189,6 +193,8 @@ const IBGTPage = ({ }: Props) => {
       </div>
     );
   }
+
+
 
   return (
     <>
@@ -241,15 +247,31 @@ const IBGTPage = ({ }: Props) => {
                 />
                 <Image src="/images/ibgt-logo.svg" width={24} height={24} alt="iBGT" />
               </div>
-              <p>${totalValue?.toFixed(2)}</p>
+              <p>${totalValue?.toFixed(2) || 0.0}</p>
             </div>
 
             {isConnected ? (
               <button
-                className="connect-button w-full"
-              // onClick={() => setIsModalOpen(true)}
+                className='connect-button w-full flex justify-center'
+                disabled={buttonDisabled}
+                onClick={txCompleted ? () => window.open(`https://berascan.com/tx/${txHash}`, '_blank') : handleStakeClick}
               >
-                Stake
+                {insufficientBalance
+                  ? 'Insufficient Balance'
+                  : approvalProcessing
+                    ? <div className="flex items-center">
+                      <Loader2 className="animate-spin mr-2" size={16} />
+                      Processing Approval...
+                    </div>
+                    : isTransactionProcessing
+                      ? <div className="flex items-center">
+                        <Loader2 className="animate-spin mr-2" size={16} />
+                        Processing Transaction...
+                      </div>
+                      : txCompleted
+                        ? 'View Transaction'
+                        : 'Stake'
+                }
               </button>
             ) : (
               <CustomButton />
@@ -257,6 +279,7 @@ const IBGTPage = ({ }: Props) => {
           </div>
 
         </div>
+        <p className=" text-center text-black mt-2">Powered by winks.fun</p>
       </div>
 
     </>
