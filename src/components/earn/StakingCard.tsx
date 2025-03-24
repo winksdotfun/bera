@@ -123,7 +123,7 @@ const StakingCard = ({
                   className={`w-6 h-6 ${index > 0 ? '-ml-2' : ''}`}
                 />
               ))}
-              <p className="text-2xl font-bold text-[#e50571]">{stBgtBalance || 0.0}</p>
+              <p className="text-2xl font-bold text-[#e50571]">{parseFloat(stBgtBalance || '0') < 0.01 ? '<0.01' : stBgtBalance || '0.0'}</p>
             </div>
             <div className="">
               <p className="text-sm text-muted-foreground/70">{userBalanceLabel}</p>
