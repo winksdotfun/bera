@@ -17,10 +17,10 @@ type Props = {
   beraPriceUSD: number;
   stBgtBalance: any;
   fetchWinkPoints: () => void;
-  setWinkpoints: any;
+  setWinkPoints: any;
 };
 
-const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkpoints }: Props) => {
+const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPoints }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
