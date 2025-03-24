@@ -4,7 +4,7 @@ import Image from "next/image";
 import CustomButton from "@/provider/Wallet";
 import StakeModal from "../modals/Stake";
 import { useAccount, usePublicClient } from "wagmi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 interface StakingCardProps {
@@ -35,13 +35,52 @@ const StakingCard = ({
 
   const { isConnected, address } = useAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [stBgtBalance, setStBgtBalance] = useState('');
+  const [stBgtBalance, setStBgtBalance] = useState(''); 
+  const [winkpoints, setWinkpoints] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onClose = () => {
     setIsModalOpen(false);
   }
 
   const publicClient = usePublicClient();
+
+  const fetchWinkpoints = useCallback(async () => {
+    if (!address) return;
+  
+    try {
+      setIsLoading(true); // Optional: Show loading state
+  
+      // ✅ Await the fetch request
+      const response = await fetch(
+        `https://inner-circle-seven.vercel.app/api/action/getPoints?address=${address}`,
+        { method: "GET" }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+  
+      // ✅ Await the JSON parsing
+      const data = await response.json();
+      console.log("Winkpoints data:", data);
+  
+      if (data && data.points !== undefined) {
+        setWinkpoints(data.points);
+      } else {
+        console.warn("Invalid data format received:", data);
+        setWinkpoints(0);
+      }
+    } catch (error) {
+      console.error("Error fetching winkpoints:", error);
+      setWinkpoints(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address]); // ✅ Added `address` as a dependency
+  
+  
+
 
   useEffect(() => {
     const fetchBalances = async () => {
@@ -72,12 +111,13 @@ const StakingCard = ({
     };
 
     fetchBalances();
+    fetchWinkpoints();
   }, [address]);
 
   return (
     <Card className="gradient-border overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+        <CardTitle className="text-xl font-semibold"><div className="flex justify-between items-center">{title} <p className="bg-[#e50571]/50 w-fit p-1 px-2 text-sm rounded-md text-foreground"> Wink points: {winkpoints}</p></div></CardTitle>
         <CardDescription className="text-muted-foreground/70">
           {description}
         </CardDescription>
@@ -144,7 +184,7 @@ const StakingCard = ({
 
       {isModalOpen &&
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <StakeModal onClose={onClose} beraPriceUSD={beraPriceUSD} stBgtBalance={stBgtBalance} />
+        <StakeModal onClose={onClose} fetchWinkPoints={fetchWinkpoints} setWinkPoints={setWinkpoints} beraPriceUSD={beraPriceUSD} stBgtBalance={stBgtBalance} />
       </div>
       }
      

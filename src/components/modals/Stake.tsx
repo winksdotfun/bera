@@ -8,15 +8,19 @@ import contractABI from "@/abi/contractABI.json";
 import approvalContractABI from "@/abi/stBGTcontractABI.json"
 import { sepolia, berachain } from 'viem/chains';
 import { ethers } from 'ethers';
+import CustomButton from '@/provider/Wallet';
+import TransactionModal from './TransactionModal';
 
 
 type Props = {
   onClose: () => void;
   beraPriceUSD: number;
   stBgtBalance: any;
+  fetchWinkPoints: () => void;
+  setWinkpoints: any;
 };
 
-const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
+const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkpoints }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
@@ -25,6 +29,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const [txCompleted, setTxCompleted] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +56,13 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
 
   const { writeContractAsync } = useWriteContract();
   const publicClient = usePublicClient();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
 
   const handleStakeClick = async (amount: any) => {
     setApprovalProcessing(true); 
     setErrorMessage("");
+    setIsModalOpen(true);
     console.log(address, "amount", inputValue);
   
     let txHash = "";
@@ -93,6 +99,9 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
       await publicClient.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false); // Transaction is done
       setTxHash(txHash);
+
+      await postUserAddressForPoints();
+
     } catch (error) {
       console.error("Error:", error);
       // Extract a user-friendly error message
@@ -110,10 +119,42 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
       }
       setErrorMessage(errorMsg);
       setApprovalProcessing(false);
+      setIsModalOpen(false);
     } finally {
       setTxCompleted(!!txHash);
     }
   };
+
+  const postUserAddressForPoints = async () => {
+    try {
+      const response = await fetch(
+        "https://inner-circle-seven.vercel.app/api/action/setPoints",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: address,
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to update points");
+      }
+  
+      const data = await response.json();
+      console.log("Points updated:", data);
+  
+      // ✅ Fetch updated Winkpoints after posting user address
+      setWinkpoints(0)
+      fetchWinkPoints();
+    } catch (error) {
+      console.error("Error updating points:", error);
+    }
+  };
+
 
 
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing ;
@@ -153,35 +194,20 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
               <p className='text-muted-foreground/70 text-end'>~${totalValue.toFixed(2)}</p>
             </div>
           </div>
-          <Button
-            className='bg-[#e50571] w-full mt-2 text-foreground'
-            disabled={buttonDisabled}
-            onClick={txCompleted ? () => window.open(`https://berascan.com/tx/${txHash}`, '_blank') : handleStakeClick}
-          >
-            {insufficientBalance
-              ? 'Insufficient Balance'
-              : approvalProcessing
-                ? <div className="flex items-center">
-                  <Loader2 className="animate-spin mr-2" size={16} />
-                  Processing Approval...
-                </div>
-                : isTransactionProcessing
-                  ? <div className="flex items-center">
-                    <Loader2 className="animate-spin mr-2" size={16} />
-                    Processing Transaction...
-                  </div>
-                  : txCompleted
-                    ? 'View Transaction'
-                    : 'Stake'
-            }
-          </Button>
-          {/* <Button
-            className='bg-[#e50571] w-full mt-2 text-foreground'
-            onClick={handleStakeClick}
-            disabled={isStaking}
-          >
-            {isStaking ? 'Processing' : 'Stake'}
-          </Button> */}
+          {isConnected ? (
+              <Button
+                className='bg-[#e50571] w-full text-foreground mt-2'
+                disabled={buttonDisabled}
+                onClick={handleStakeClick}
+              >
+                {insufficientBalance
+                  ? 'Insufficient Balance'
+                  : 'Stake'
+                }
+              </Button>
+            ) : (
+              <CustomButton />
+            )}
           {errorMessage && (
             <div className="text-red-500 mt-2 mb-2 text-sm text-center">
               {errorMessage}
@@ -189,6 +215,13 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           )}
         </CardContent>
       </Card>
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        txHash={txHash}
+        isProcessing={isTransactionProcessing}
+        isApproving={approvalProcessing}
+      />
     </div>
   );
 };
