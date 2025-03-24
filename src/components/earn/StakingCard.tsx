@@ -85,11 +85,11 @@ const StakingCard = ({
 
       <div className="grid grid-cols-3 gap-4 px-6 py-4 border-t border-b border-border/20">
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-[#e50571]">{apr}%</p>
+          <p className="text-xl font-bold text-[#e50571]">{apr}%</p>
           <p className="text-xs uppercase font-medium text-muted-foreground/70">APR</p>
         </div>
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-[#e50571]">${poolValue}</p>
+          <p className="text-xl font-bold text-[#e50571]">${poolValue}</p>
           <p className="text-xs font-medium text-muted-foreground/70">{
             rewardType === "Points" ? "Pool liquidity" : "Total stBGT staked"
           }</p>
@@ -103,7 +103,7 @@ const StakingCard = ({
               height={20}
               className="w-5 h-5"
             />
-            <span className="text-[#e50571] font-bold text-2xl">{rewardType}</span>
+            <span className="text-[#e50571] font-bold text-xl">{rewardType}</span>
           </div>
           <span className="text-muted-foreground/70 text-sm font-medium">Rewards</span>
         </div>

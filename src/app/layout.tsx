@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 // Define base URL and player URL
-const baseUrl = "https://berastake.winks.fun";
-const playerUrl = "https://berastake.winks.fun"; // Add your actual player URL here
+const baseUrl = "https://533b-38-224-232-110.ngrok-free.app";
+const playerUrl = "https://533b-38-224-232-110.ngrok-free.app"; // Add your actual player URL here
 
 export const metadata: Metadata = {
   title: " unlock and leverage your BGT with stBGT",

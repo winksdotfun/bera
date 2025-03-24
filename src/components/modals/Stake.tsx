@@ -116,7 +116,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   };
 
 
-  const buttonDisabled = !isValidInput || insufficientBalance ;
+  const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing ;
 
 
 

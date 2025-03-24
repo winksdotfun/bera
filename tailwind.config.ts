@@ -67,7 +67,7 @@ export default {
       },
       screens: {
         sm: "300px",
-        md: "500px"
+        md: "450px"
       },
       },
     }
