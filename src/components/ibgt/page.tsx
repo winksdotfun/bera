@@ -9,6 +9,7 @@ import approvalContractABI from "@/abi/iBGTcontractABI.json"
 import { berachain } from 'viem/chains';
 import { ethers } from 'ethers';
 import { Loader2 } from "lucide-react";
+import TransactionModal from "../modals/TransactionModal";
 
 
 interface Props { }
@@ -27,6 +28,7 @@ const IBGTPage = ({ }: Props) => {
   const [txHash, setTxHash] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [iBgtBalance, setiBgtBalance] = useState<any>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   const { isConnected, address } = useAccount();
@@ -86,45 +88,82 @@ const IBGTPage = ({ }: Props) => {
   }, [totalValue, iBgtBalance, isValidInput]);
 
 
+  const checkAllowance = async () => {
+    if (!address) return BigInt(0);
+
+    try {
+      const allowance = await publicClient?.readContract({
+        address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+        abi: [
+          {
+            name: "allowance",
+            type: "function",
+            stateMutability: "view",
+            inputs: [
+              { name: "owner", type: "address" },
+              { name: "spender", type: "address" }
+            ],
+            outputs: [{ name: "", type: "uint256" }],
+          },
+        ],
+        functionName: "allowance",
+        args: [address, "0x75F3Be06b02E235f6d0E7EF2D462b29739168301"], // owner, spender
+      });
+
+      return allowance as bigint;
+    } catch (error) {
+      console.error("Error checking allowance:", error);
+      return BigInt(0);
+    }
+  };
+
   const handleStakeClick = async (amount: any) => {
-    setApprovalProcessing(true);
     setErrorMessage("");
+    setIsModalOpen(true);
     console.log(address, "amount", inputValue);
 
     let txHash = "";
 
     try {
-      // First, execute the approval contract
-      console.log(inputValue,"i/p")
-      const approvalTx = await writeContractAsync({
-        address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
-        abi: approvalContractABI,
-        functionName: "approve",
-        args: [
-          "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
-          ethers.utils.parseEther(inputValue),
-        ],
-        chain: berachain,
-        account: address as `0x${string}`,
-      });
+      const inputAmount = ethers.utils.parseEther(inputValue).toString();
+      const currentAllowance = await checkAllowance();
 
-      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
-      setApprovalProcessing(false); // Approval is done
+      console.log(currentAllowance, "currentAllowance");
+      console.log(inputAmount, "inputAmount");
+      // Check if approval is needed
+      if (BigInt(currentAllowance) < BigInt(inputAmount)) {
+        setApprovalProcessing(true);
+        // Execute the approval contract
+        const approvalTx = await writeContractAsync({
+          address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+          abi: approvalContractABI,
+          functionName: "approve",
+          args: [
+            "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+            inputAmount,
+          ],
+          chain: berachain,
+          account: address as `0x${string}`,
+        });
 
-      // After approval, execute the stake contract
-      setIsTransactionProcessing(true); // New state to track transaction processing
+        await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+        setApprovalProcessing(false);
+      }
+
+      // After approval (or if approval wasn't needed), execute the stake contract
+      setIsTransactionProcessing(true);
       const stakeTx = await writeContractAsync({
         address: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
         abi: contractABI,
         functionName: "stake",
-        args: [ethers.utils.parseEther(inputValue)],
+        args: [inputAmount],
         chain: berachain,
         account: address as `0x${string}`,
       });
 
       txHash = stakeTx;
       await publicClient.waitForTransactionReceipt({ hash: stakeTx });
-      setIsTransactionProcessing(false); // Transaction is done
+      setIsTransactionProcessing(false);
       setTxHash(txHash);
     } catch (error) {
       console.error("Error:", error);
@@ -143,6 +182,7 @@ const IBGTPage = ({ }: Props) => {
       }
       setErrorMessage(errorMsg);
       setApprovalProcessing(false);
+      setIsModalOpen(false); // Close modal on error
     } finally {
       setTxCompleted(!!txHash);
     }
@@ -254,23 +294,11 @@ const IBGTPage = ({ }: Props) => {
               <button
                 className='connect-button w-full flex justify-center'
                 disabled={buttonDisabled}
-                onClick={txCompleted ? () => window.open(`https://berascan.com/tx/${txHash}`, '_blank') : handleStakeClick}
+                onClick={handleStakeClick}
               >
                 {insufficientBalance
                   ? 'Insufficient Balance'
-                  : approvalProcessing
-                    ? <div className="flex items-center">
-                      <Loader2 className="animate-spin mr-2" size={16} />
-                      Processing Approval...
-                    </div>
-                    : isTransactionProcessing
-                      ? <div className="flex items-center">
-                        <Loader2 className="animate-spin mr-2" size={16} />
-                        Processing Transaction...
-                      </div>
-                      : txCompleted
-                        ? 'View Transaction'
-                        : 'Stake'
+                  : 'Stake'
                 }
               </button>
             ) : (
@@ -281,6 +309,14 @@ const IBGTPage = ({ }: Props) => {
         </div>
         <p className=" text-center text-black mt-2">Powered by winks.fun</p>
       </div>
+
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        txHash={txHash}
+        isProcessing={isTransactionProcessing}
+        isApproving={approvalProcessing}
+      />
 
     </>
   );
