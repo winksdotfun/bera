@@ -29,6 +29,8 @@ const IBGTPage = ({ }: Props) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [iBgtBalance, setiBgtBalance] = useState<any>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [winkpoints, setWinkpoints] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const { isConnected, address } = useAccount();
@@ -69,8 +71,46 @@ const IBGTPage = ({ }: Props) => {
     fetchStats();
   }, []);
 
+  const fetchWinkpoints = async () => {
+    if (!address) {
+      return;
+    }
+  
+    try {
+      setIsLoading(true); // Optional: Set loading state if needed
+  
+      const response = await fetch(
+        `https://inner-circle-seven.vercel.app/api/action/getPoints?address=${address}`,
+        {
+          method: "GET",
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Winkpoints data:", data);
+  
+      if (data && data.points !== undefined) {
+        setWinkpoints(data.points);
+      } else {
+        console.warn("Invalid data format received:", data);
+        setWinkpoints(0); // Set default value if data is unexpected
+      }
+    } catch (error) {
+      console.error("Error fetching winkpoints:", error);
+      setWinkpoints(0); // Set default value in case of an error
+    } finally {
+      setIsLoading(false); // Optional: Reset loading state
+    }
+  };
+  
+
   useEffect(() => {
     fetchBalances();
+    fetchWinkpoints();
   }, [address]);
 
   const totalValue = isValidInput ? parseFloat(inputValue) * iBgtPrice : 0;
@@ -165,6 +205,9 @@ const IBGTPage = ({ }: Props) => {
       await publicClient.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false);
       setTxHash(txHash);
+
+      await postUserAddressForPoints();
+
     } catch (error) {
       console.error("Error:", error);
       // Extract a user-friendly error message
@@ -185,6 +228,36 @@ const IBGTPage = ({ }: Props) => {
       setIsModalOpen(false); // Close modal on error
     } finally {
       setTxCompleted(!!txHash);
+    }
+  };
+
+  const postUserAddressForPoints = async () => {
+    try {
+      const response = await fetch(
+        "https://inner-circle-seven.vercel.app/api/action/setPoints",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: address,
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to update points");
+      }
+  
+      const data = await response.json();
+      console.log("Points updated:", data);
+  
+      // ✅ Fetch updated Winkpoints after posting user address
+      setWinkpoints(0)
+      fetchWinkpoints();
+    } catch (error) {
+      console.error("Error updating points:", error);
     }
   };
 
@@ -241,6 +314,7 @@ const IBGTPage = ({ }: Props) => {
       <div className="container mx-auto bricolage-font">
         <div className="infrared-card max-w-[450px] mx-auto">
           <div className="infrared-card-header bg-product-header-gradient bg-cover border-gray-300 border rounded-t-xl space-y-2">
+            <div className=" flex justify-between items-center">
             <div className="flex items-center space-x-4 ">
               <Image
                 src="/images/ibgt-logo.svg"
@@ -249,6 +323,8 @@ const IBGTPage = ({ }: Props) => {
                 height={30}
               />
               <h1 className="text-2xl font-bold">iBGT</h1>
+            </div>
+            <p className=" bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3">Wink points: {winkpoints}</p>
             </div>
             <p className="">
               Stake iBGT to earn rewards.

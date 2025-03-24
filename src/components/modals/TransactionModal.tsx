@@ -46,9 +46,7 @@ const TransactionModal = ({
             <>
               <CheckCircle2 className="text-green-500 mx-auto" size={48} />
               <h3 className="text-xl font-medium">Transaction Successful!</h3>
-              <p className="text-gray-600">
-                Your transaction has been confirmed on the blockchain.
-              </p>
+              <p className=" text-black"> You just scored <span className="font-semibold">100</span> wink points!</p>
               <div className="flex justify-center gap-4 mt-4">
                 <button
                   onClick={() => window.open(`https://berascan.com/tx/${txHash}`, '_blank')}
