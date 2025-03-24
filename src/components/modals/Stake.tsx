@@ -130,7 +130,10 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
           </div>
         </CardHeader>
         <CardContent>
+          <div className=" flex justify-between items-center">
           <p className='text-muted-foreground/70'>Available: {stBgtBalance} stBGT</p>
+          <button className='bg-[#e50571] w-fit p-1 px-2 rounded text-sm text-foreground' onClick={() => setInputValue(stBgtBalance)}>MAX</button>
+          </div>
           <div className="bg-black/30 mt-2 rounded-md p-3 px-5 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Image src="https://ext.same-assets.com/2446876795/1753465442.svg" width={48} height={48} alt="stBGT" />
