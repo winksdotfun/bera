@@ -11,6 +11,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { berachain } from "wagmi/chains";
+import { ReferrerTracker } from "./referrerTracker";
 
 
 export default function ClientBody({
@@ -41,7 +42,7 @@ export default function ClientBody({
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider chains={[berachain]}>
-
+          {/* <ReferrerTracker /> */}
             {children}
           </RainbowKitProvider>
         </QueryClientProvider>
