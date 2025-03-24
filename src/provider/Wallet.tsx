@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
@@ -40,32 +41,32 @@ const CustomButton = () => {
                   {(() => {
                     if (!connected) {
                       return (
-                        <Button
-                          className="bg-[#e50571] text-foreground"
+                        <button
+                          className="connect-button w-full"
                           onClick={openConnectModal}
                           type="button"
                         >
                           Connect Wallet
-                        </Button>
+                        </button>
                       );
                     }
 
                     if (chain.unsupported) {
                       return (
-                        <Button
+                        <button
                           className=" bg-red-500"
                           onClick={openChainModal}
                           type="button"
                         >
                           Wrong network
-                        </Button>
+                        </button>
                       );
                     }
 
                     return (
                       <div className="">
-                        <Button
-                          className=" bg-[#e50571] text-foreground"
+                        <button
+                          className="connect-button w-full"
                           onClick={openAccountModal}
                           type="button"
                         >
@@ -73,7 +74,7 @@ const CustomButton = () => {
                           {account.displayBalance
                             ? ` (${account.displayBalance})`
                             : ""}
-                        </Button>
+                        </button>
                       </div>
                     );
                   })()}
