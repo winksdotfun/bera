@@ -228,6 +228,7 @@ const IBGTPage = ({ }: Props) => {
       setIsModalOpen(false); // Close modal on error
     } finally {
       setTxCompleted(!!txHash);
+      fetchWinkpoints()
     }
   };
 
