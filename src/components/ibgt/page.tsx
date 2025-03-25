@@ -58,10 +58,10 @@ const IBGTPage = ({ }: Props) => {
         const rewardToken = data.reward_tokens.find((token: any) => token.apr !== undefined);
         console.log("apr", rewardToken ? rewardToken.apr : null)
         const APR = (rewardToken ? rewardToken.apr : null) * 100
-        const iBGTPrice = data.underlying_tokens.find(token => token.symbol === "iBGT")?.price;
+        const iBGTPrice = data.underlying_tokens.find(token => token.symbol === "kodiak-WBERA-HONEY")?.price;
         setiBgtPrice(iBGTPrice)
         setAprValue(APR);
-        setTvlValue(data.tvl)
+        setTvlValue(data.tvl) 
         setStatsData(data);
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -133,7 +133,7 @@ const IBGTPage = ({ }: Props) => {
 
     try {
       const allowance = await publicClient?.readContract({
-        address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+        address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
         abi: [
           {
             name: "allowance",
@@ -147,7 +147,7 @@ const IBGTPage = ({ }: Props) => {
           },
         ],
         functionName: "allowance",
-        args: [address, "0x75F3Be06b02E235f6d0E7EF2D462b29739168301"], // owner, spender
+        args: [address, "0x418D63947889e55C16280Cb7785cF84EF081F224"], // owner, spender
       });
 
       return allowance as bigint;
@@ -175,11 +175,11 @@ const IBGTPage = ({ }: Props) => {
         setApprovalProcessing(true);
         // Execute the approval contract
         const approvalTx = await writeContractAsync({
-          address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+          address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
           abi: approvalContractABI,
           functionName: "approve",
           args: [
-            "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+            "0x418D63947889e55C16280Cb7785cF84EF081F224",
             inputAmount,
           ],
           chain: berachain,
@@ -193,7 +193,7 @@ const IBGTPage = ({ }: Props) => {
       // After approval (or if approval wasn't needed), execute the stake contract
       setIsTransactionProcessing(true);
       const stakeTx = await writeContractAsync({
-        address: "0x75F3Be06b02E235f6d0E7EF2D462b29739168301",
+        address: "0x418D63947889e55C16280Cb7785cF84EF081F224",
         abi: contractABI,
         functionName: "stake",
         args: [inputAmount],
@@ -268,7 +268,7 @@ const IBGTPage = ({ }: Props) => {
     try {
       // Fetch stMON balance
       const iBgtBalance = await publicClient.readContract({
-        address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
+        address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
         abi: [
           {
             name: "balanceOf",
@@ -289,7 +289,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const formatTVL = (tvl: number) => (tvl / 1_000_000).toFixed(2);
+  const formatTVL = (tvl: number) => (tvl / 1_000).toFixed(2);
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;
 
 
@@ -317,19 +317,34 @@ const IBGTPage = ({ }: Props) => {
           <div className="infrared-card-header bg-product-header-gradient bg-cover border-gray-300 border rounded-t-xl space-y-2">
             <div className=" flex justify-between items-center">
             <div className="flex items-center space-x-4 ">
-              <Image
-                src="/images/ibgt-logo.svg"
-                alt="iBGT logo"
-                width={30}
-                height={30}
-              />
-              <h1 className="text-2xl font-bold">iBGT</h1>
+              <div className="relative w-[30px] h-[30px]">
+                <Image
+                  src="/images/wbera.svg"
+                  alt="WBERA logo"
+                  width={30}
+                  height={30}
+                  className="absolute left-0"
+                />
+                <Image
+                  src="/images/honey.svg" 
+                  alt="HONEY logo"
+                  width={30}
+                  height={30}
+                  className="absolute left-3"
+                />
+              </div>
+              <h1 className="text-2xl text-balance">
+              WBERA-HONEY</h1>
             </div>
-            <p className=" bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3">Wink points: {winkpoints}</p>
+
+       
+
+
+            <p className=" bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-4">Wink points: {winkpoints}</p>
             </div>
-            <p className="">
-              Stake iBGT to earn rewards.
-            </p>
+            <p className=" flex  space-x-2">
+<Image src="/images/kodaik.svg" width={30} height={30} alt="iBGT" />
+Kodaik            </p>
 
 
             <div className="grid grid-cols-3 gap-4">
@@ -342,15 +357,15 @@ const IBGTPage = ({ }: Props) => {
                 <div className="text-xl font-medium">$ {tvlvalue !== null ? formatTVL(tvlvalue) : "Loading..."}M</div>
               </div>
               <div>
-                <div className="text-sm opacity-80">% of iBGT staked</div>
-                <div className="text-xl font-medium">79.03%</div>
+                <div className="text-sm opacity-80">TYPE</div>
+                <div className="text-xl font-medium">AMM</div>
               </div>
             </div>
           </div>
 
           <div className="p-4 border-gray-300 border border-t-0 rounded-b-xl space-y-2">
             <div className=" flex justify-between items-center">
-              <p>Available: {iBgtBalance} iBGT</p>
+              <p>Available: {iBgtBalance} HONEY</p>
               <button className=" bg-gray-800 text-white p-0.5 px-2 rounded-lg" onClick={() => setInputValue(iBgtBalance)}> MAX</button>
             </div>
             <div className="border p-4 border-gray-300 rounded-xl">

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const response = await fetch("https://infrared.finance/api/vault/infrared-ibgt-v2?chainId=80094");
+    const response = await fetch("https://infrared.finance/api/vault/kodiak-wbera-honey?chainId=80094");
     if (!response.ok) {
       throw new Error("Failed to fetch data");
     }
