@@ -31,7 +31,7 @@ const IBGTPage = ({ }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winkpoints, setWinkpoints] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const KODIAK_MINT_URL = "https://app.kodiak.exchange";
+  const KODIAK_MINT_URL = "https://app.kodiak.finance/#/liquidity/pools/0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da?chain=berachain_mainnet";
 
 
   const { isConnected, address } = useAccount();
