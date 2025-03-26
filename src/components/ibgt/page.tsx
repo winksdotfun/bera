@@ -302,7 +302,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const formatTVL = (tvl: number) => (tvl / 1_000_000).toFixed(2) + "M";
+  const formatTVL = (tvl: number) => (tvl / 1_000).toFixed(2) + "M";
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;
 
 
@@ -332,21 +332,22 @@ const IBGTPage = ({ }: Props) => {
               <div className="flex items-center space-x-4">
                 <div className="relative w-[30px] h-[30px]">
                   <Image
-                    src="/images/wbera.svg"
-                    alt="WBERA logo"
+                    src="/images/wbtc.svg"
+                    alt="WBTC logo"
                     width={30}
                     height={30}
                     className="absolute left-0"
                   />
                   <Image
-                    src="/images/wbtc.svg"
-                    alt="WBTC logo"
+                    src="/images/wbera.svg"
+                    alt="WBERA logo"
                     width={30}
                     height={30}
                     className="absolute left-3"
                   />
                 </div>
-                <h1 className="text-2xl">WBERA-WBTC                </h1>
+                <h1 className="text-2xl">WBTC-WBERA
+                </h1>
               </div>
               <p className="bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-3">
                 Wink points: {winkpoints}
@@ -354,8 +355,8 @@ const IBGTPage = ({ }: Props) => {
             </div>
 
             <div className="flex items-center">
-                <Image src="/images/bex.svg" width={30} height={30} alt="Kodiak" />
-                <span className="ml-2">BEX</span>
+                <Image src="/images/kodaik.svg" width={30} height={30} alt="Kodiak" />
+                <span className="ml-2">Kodiak</span>
               </div>
 
             <div className="grid grid-cols-3 gap-4">
