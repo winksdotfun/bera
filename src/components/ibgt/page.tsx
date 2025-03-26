@@ -14,6 +14,12 @@ import TransactionModal from "../modals/TransactionModal";
 
 interface Props { }
 
+const tokenContractAddress = "0x2c4a603A2aA5596287A06886862dc29d56DbC354";
+const stakeContractAddress = "0xe2d8941dfb85435419D90397b09D18024ebeef2C";
+
+const KODIAK_MINT_URL = "https://hub.berachain.com/pools/0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002/deposit/";
+
+
 const IBGTPage = ({ }: Props) => {
   const [statsData, setStatsData] = useState(false);
   const [aprValue, setAprValue] = useState<number>();
@@ -31,7 +37,6 @@ const IBGTPage = ({ }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winkpoints, setWinkpoints] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const KODIAK_MINT_URL = "https://app.kodiak.exchange";
 
 
   const { isConnected, address } = useAccount();
@@ -141,7 +146,7 @@ const IBGTPage = ({ }: Props) => {
 
     try {
       const allowance = await publicClient?.readContract({
-        address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+        address: tokenContractAddress,
         abi: [
           {
             name: "allowance",
@@ -155,7 +160,7 @@ const IBGTPage = ({ }: Props) => {
           },
         ],
         functionName: "allowance",
-        args: [address, "0x418D63947889e55C16280Cb7785cF84EF081F224"], // owner, spender
+        args: [address, stakeContractAddress], // owner, spender
       });
 
       return allowance as bigint;
@@ -183,11 +188,11 @@ const IBGTPage = ({ }: Props) => {
         setApprovalProcessing(true);
         // Execute the approval contract
         const approvalTx = await writeContractAsync({
-          address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+          address: tokenContractAddress,
           abi: approvalContractABI,
           functionName: "approve",
           args: [
-            "0x418D63947889e55C16280Cb7785cF84EF081F224",
+            stakeContractAddress,
             inputAmount,
           ],
           chain: berachain,
@@ -201,7 +206,7 @@ const IBGTPage = ({ }: Props) => {
       // After approval (or if approval wasn't needed), execute the stake contract
       setIsTransactionProcessing(true);
       const stakeTx = await writeContractAsync({
-        address: "0x418D63947889e55C16280Cb7785cF84EF081F224",
+        address: stakeContractAddress,
         abi: contractABI,
         functionName: "stake",
         args: [inputAmount],
@@ -276,7 +281,7 @@ const IBGTPage = ({ }: Props) => {
     try {
       // Fetch stMON balance
       const iBgtBalance = await publicClient.readContract({
-        address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
+        address: tokenContractAddress,
         abi: [
           {
             name: "balanceOf",
@@ -297,7 +302,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const formatTVL = (tvl: number) => (tvl / 1_000).toFixed(2);
+  const formatTVL = (tvl: number) => (tvl / 1_000_000).toFixed(2) + "M";
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;
 
 
@@ -349,8 +354,8 @@ const IBGTPage = ({ }: Props) => {
             </div>
 
             <div className="flex items-center">
-                <Image src="/images/kodaik.svg" width={30} height={30} alt="Kodiak" />
-                <span className="ml-2">Kodiak</span>
+                <Image src="/images/bex.svg" width={30} height={30} alt="Kodiak" />
+                <span className="ml-2">BEX</span>
               </div>
 
             <div className="grid grid-cols-3 gap-4">
