@@ -14,10 +14,10 @@ import TransactionModal from "../modals/TransactionModal";
 
 interface Props { }
 
-const tokenContractAddress = "0x2c4a603A2aA5596287A06886862dc29d56DbC354";
-const stakeContractAddress = "0xe2d8941dfb85435419D90397b09D18024ebeef2C";
+const tokenContractAddress = "0xDd70A5eF7d8CfE5C5134b5f9874b09Fb5Ce812b4";
+const stakeContractAddress = "0x0dF14916796854d899576CBde69a35bAFb923c22";
 
-const KODIAK_MINT_URL = "https://hub.berachain.com/pools/0x2c4a603a2aa5596287a06886862dc29d56dbc354000200000000000000000002/deposit/";
+const KODIAK_MINT_URL = "https://hub.berachain.com/pools/0xdd70a5ef7d8cfe5c5134b5f9874b09fb5ce812b4000200000000000000000003/deposit/"
 
 
 const IBGTPage = ({ }: Props) => {
@@ -339,14 +339,14 @@ const IBGTPage = ({ }: Props) => {
                     className="absolute left-0"
                   />
                   <Image
-                    src="/images/honey.svg"
+                    src="/images/weth.svg"
                     alt="HONEY logo"
                     width={30}
                     height={30}
                     className="absolute left-3"
                   />
                 </div>
-                <h1 className="text-2xl">WBERA-HONEY</h1>
+                <h1 className="text-2xl">WBERA-WETH</h1>
               </div>
               <p className="bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-3">
                 Wink points: {winkpoints}
@@ -383,7 +383,7 @@ const IBGTPage = ({ }: Props) => {
 
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-              <p>Available: {iBgtBalance} HONEY</p>
+              <p>Available: {iBgtBalance} WETH</p>
               <button className="bg-gray-800 text-white p-0.5 px-2 rounded-lg" onClick={() => setInputValue(iBgtBalance)}>MAX</button>
             </div>
 
@@ -405,27 +405,27 @@ const IBGTPage = ({ }: Props) => {
                     className="absolute left-0"
                   />
                   <Image
-                    src="/images/honey.svg"
-                    alt="HONEY logo"
+                    src="/images/weth.svg"
+                    alt="WETH logo"
                     width={30}
                     height={30}
                     className="absolute left-3"
                   />
                 </div>               </div>
-              <p>${totalValue?.toFixed(2) || 0.0}</p>
+              <p>${totalValue?.toFixed(4) || 0.0}</p>
             </div>
 
             {insufficientBalance ? (
               <div className="space-y-2">
                 <p className="text-sm text-red-500 flex items-center space-x-2">
            
-                  <span>You only have {iBgtBalance} kodiak-WBERA-HONEY</span>
+                  <span>You only have {iBgtBalance} WBERA-WETH</span>
                 </p>
                 <div className="flex items-center space-x-2 border p-2 rounded-xl text-sm">
                   {/* <Image src="/images/info.svg" width={20} height={20} alt="info" /> */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info size-4"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
                   <p className="text-gray-600 text-sm">
-                    Mint on Kodiak then stake your LP tokens here.
+                    Mint on Beraswap then stake your LP tokens here.
                   </p>
                 </div>
                 <button 
