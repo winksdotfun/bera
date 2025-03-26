@@ -14,10 +14,10 @@ import TransactionModal from "../modals/TransactionModal";
 
 interface Props { }
 
-const tokenContractAddress = "0xDd70A5eF7d8CfE5C5134b5f9874b09Fb5Ce812b4";
-const stakeContractAddress = "0x0dF14916796854d899576CBde69a35bAFb923c22";
+const tokenContractAddress = "0x38fdD999Fe8783037dB1bBFE465759e312f2d809";
+const stakeContractAddress = "0x78beda3a06443f51718d746aDe95b5fAc094633E";
 
-const KODIAK_MINT_URL = "https://hub.berachain.com/pools/0xdd70a5ef7d8cfe5c5134b5f9874b09fb5ce812b4000200000000000000000003/deposit/"
+const KODIAK_MINT_URL = "https://hub.berachain.com/pools/0x38fdd999fe8783037db1bbfe465759e312f2d809000200000000000000000004/deposit/"
 
 
 const IBGTPage = ({ }: Props) => {
@@ -339,14 +339,14 @@ const IBGTPage = ({ }: Props) => {
                     className="absolute left-0"
                   />
                   <Image
-                    src="/images/weth.svg"
-                    alt="HONEY logo"
+                    src="/images/wbtc.svg"
+                    alt="WBTC logo"
                     width={30}
                     height={30}
                     className="absolute left-3"
                   />
                 </div>
-                <h1 className="text-2xl">WBERA-WETH</h1>
+                <h1 className="text-2xl">WBERA-WBTC                </h1>
               </div>
               <p className="bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-3">
                 Wink points: {winkpoints}
@@ -381,9 +381,9 @@ const IBGTPage = ({ }: Props) => {
        
           </div>
 
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-6">
             <div className="flex justify-between items-center">
-              <p>Available: {iBgtBalance} WETH</p>
+              <p>Available: {iBgtBalance} WBTC</p>
               <button className="bg-gray-800 text-white p-0.5 px-2 rounded-lg" onClick={() => setInputValue(iBgtBalance)}>MAX</button>
             </div>
 
@@ -405,8 +405,8 @@ const IBGTPage = ({ }: Props) => {
                     className="absolute left-0"
                   />
                   <Image
-                    src="/images/weth.svg"
-                    alt="WETH logo"
+                    src="/images/wbtc.svg"
+                    alt="WBTC logo"
                     width={30}
                     height={30}
                     className="absolute left-3"
