@@ -31,6 +31,7 @@ const IBGTPage = ({ }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winkpoints, setWinkpoints] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const KODIAK_MINT_URL = "https://app.kodiak.exchange";
 
 
   const { isConnected, address } = useAccount();
@@ -39,8 +40,8 @@ const IBGTPage = ({ }: Props) => {
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except for decimal point
-    const isValid = !isNaN(parseFloat(value)) && value !== '';
+    const value = e.target.value.replace(/[^0-9.]/g, '');
+    const isValid = !isNaN(parseFloat(value)) && value !== '' && parseFloat(value) > 0;
 
     setIsValidInput(isValid);
     setInputValue(value);
@@ -55,10 +56,14 @@ const IBGTPage = ({ }: Props) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+
+        console.log("data", data);
         const rewardToken = data.reward_tokens.find((token: any) => token.apr !== undefined);
         console.log("apr", rewardToken ? rewardToken.apr : null)
         const APR = (rewardToken ? rewardToken.apr : null) * 100
-        const iBGTPrice = data.underlying_tokens.find(token => token.symbol === "kodiak-WBERA-HONEY")?.price;
+        const iBGTPrice = data?.stake_token?.price;
+
+        console.log("iBGTPrice", iBGTPrice);
         setiBgtPrice(iBGTPrice)
         setAprValue(APR);
         setTvlValue(data.tvl) 
@@ -116,8 +121,11 @@ const IBGTPage = ({ }: Props) => {
   const totalValue = isValidInput ? parseFloat(inputValue) * iBgtPrice : 0;
 
   useEffect(() => {
-    if (isValidInput) {
-      if (totalValue > iBgtBalance) {
+    if (isValidInput && iBgtBalance) {
+      const inputValueNumber = parseFloat(inputValue);
+      const balanceNumber = parseFloat(iBgtBalance);
+      
+      if (inputValueNumber > balanceNumber) {
         setInsufficientBalance(true);
       } else {
         setInsufficientBalance(false);
@@ -125,7 +133,7 @@ const IBGTPage = ({ }: Props) => {
     } else {
       setInsufficientBalance(false);
     }
-  }, [totalValue, iBgtBalance, isValidInput]);
+  }, [inputValue, iBgtBalance, isValidInput]);
 
 
   const checkAllowance = async () => {
@@ -313,39 +321,37 @@ const IBGTPage = ({ }: Props) => {
   return (
     <>
       <div className="container mx-auto bricolage-font">
-        <div className="infrared-card max-w-[450px] mx-auto">
-          <div className="infrared-card-header bg-product-header-gradient bg-cover border-gray-300 border rounded-t-xl space-y-2">
-            <div className=" flex justify-between items-center">
-            <div className="flex items-center space-x-4 ">
-              <div className="relative w-[30px] h-[30px]">
-                <Image
-                  src="/images/wbera.svg"
-                  alt="WBERA logo"
-                  width={30}
-                  height={30}
-                  className="absolute left-0"
-                />
-                <Image
-                  src="/images/honey.svg" 
-                  alt="HONEY logo"
-                  width={30}
-                  height={30}
-                  className="absolute left-3"
-                />
+        <div className="infrared-card max-w-[550px] mx-auto">
+          <div className="infrared-card-header bg-product-header-gradient bg-cover border-gray-300 border rounded-t-xl space-y-2 p-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <div className="relative w-[30px] h-[30px]">
+                  <Image
+                    src="/images/wbera.svg"
+                    alt="WBERA logo"
+                    width={30}
+                    height={30}
+                    className="absolute left-0"
+                  />
+                  <Image
+                    src="/images/honey.svg"
+                    alt="HONEY logo"
+                    width={30}
+                    height={30}
+                    className="absolute left-3"
+                  />
+                </div>
+                <h1 className="text-2xl">WBERA-HONEY</h1>
               </div>
-              <h1 className="text-2xl text-balance">
-              WBERA-HONEY</h1>
+              <p className="bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-3">
+                Wink points: {winkpoints}
+              </p>
             </div>
 
-       
-
-
-            <p className=" bg-gray-800/50 text-white p-2 rounded-xl text-sm px-3 mx-4">Wink points: {winkpoints}</p>
-            </div>
-            <p className=" flex  space-x-2">
-<Image src="/images/kodaik.svg" width={30} height={30} alt="iBGT" />
-Kodaik            </p>
-
+            <div className="flex items-center">
+                <Image src="/images/kodaik.svg" width={30} height={30} alt="Kodiak" />
+                <span className="ml-2">Kodiak</span>
+              </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div>
@@ -354,53 +360,101 @@ Kodaik            </p>
               </div>
               <div>
                 <div className="text-sm opacity-80">TVL</div>
-                <div className="text-xl font-medium">$ {tvlvalue !== null ? formatTVL(tvlvalue) : "Loading..."}M</div>
+                <div className="text-xl font-medium">${tvlvalue !== null ? formatTVL(tvlvalue) : "Loading..."}</div>
               </div>
               <div>
-                <div className="text-sm opacity-80">TYPE</div>
+                <div className="text-sm opacity-80">Type</div>
                 <div className="text-xl font-medium">AMM</div>
               </div>
             </div>
           </div>
 
-          <div className="p-4 border-gray-300 border border-t-0 rounded-b-xl space-y-2">
-            <div className=" flex justify-between items-center">
+          <div className="flex border-b border-gray-300">
+            <button className="flex-1 py-2 border-b-2 border-black font-medium">
+              Stake
+            </button>
+       
+          </div>
+
+          <div className="p-4 space-y-4">
+            <div className="flex justify-between items-center">
               <p>Available: {iBgtBalance} HONEY</p>
-              <button className=" bg-gray-800 text-white p-0.5 px-2 rounded-lg" onClick={() => setInputValue(iBgtBalance)}> MAX</button>
+              <button className="bg-gray-800 text-white p-0.5 px-2 rounded-lg" onClick={() => setInputValue(iBgtBalance)}>MAX</button>
             </div>
+
             <div className="border p-4 border-gray-300 rounded-xl">
-              <div className=" flex">
+              <div className="flex">
                 <input
                   type="text"
-                  className=" w-full bg-transparent focus:outline-none text-xl"
+                  className="w-full bg-transparent focus:outline-none text-xl"
                   placeholder="0.0"
                   value={inputValue}
                   onChange={handleInputChange}
                 />
-                <Image src="/images/ibgt-logo.svg" width={24} height={24} alt="iBGT" />
-              </div>
+<div className="relative w-[30px] h-[30px]">
+                  <Image
+                    src="/images/wbera.svg"
+                    alt="WBERA logo"
+                    width={30}
+                    height={30}
+                    className="absolute left-0"
+                  />
+                  <Image
+                    src="/images/honey.svg"
+                    alt="HONEY logo"
+                    width={30}
+                    height={30}
+                    className="absolute left-3"
+                  />
+                </div>               </div>
               <p>${totalValue?.toFixed(2) || 0.0}</p>
             </div>
 
-            {isConnected ? (
-              <button
-                className='connect-button w-full flex justify-center'
-                disabled={buttonDisabled}
-                onClick={handleStakeClick}
-              >
-                {insufficientBalance
-                  ? 'Insufficient Balance'
-                  : 'Stake'
-                }
-              </button>
+            {insufficientBalance ? (
+              <div className="space-y-2">
+                <p className="text-sm text-red-500 flex items-center space-x-2">
+           
+                  <span>You only have {iBgtBalance} kodiak-WBERA-HONEY</span>
+                </p>
+                <div className="flex items-center space-x-2 border p-2 rounded-xl text-sm">
+                  {/* <Image src="/images/info.svg" width={20} height={20} alt="info" /> */}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info size-4"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                  <p className="text-gray-600 text-sm">
+                    Mint on Kodiak then stake your LP tokens here.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => window.open(KODIAK_MINT_URL, '_blank')}
+                  className="w-full bg-black text-white rounded-xl py-3 flex items-center justify-center space-x-2"
+                >
+                  <span>Mint</span>
+                  <span>↗</span>
+                </button>
+              </div>
             ) : (
-              <CustomButton />
+              isConnected ? (
+                <button
+                  className='connect-button w-full'
+                  disabled={buttonDisabled}
+                  onClick={handleStakeClick}
+                >
+                  Stake
+                </button>
+              ) : (
+                <CustomButton />
+              )
             )}
           </div>
-
+          
         </div>
-        <p className=" text-center text-black mt-2">Powered by winks.fun</p>
+
+        <div className="flex justify-center items-center text-center">
+        Powered by Winks.fun
+        </div>
+        
       </div>
+
+
 
       <TransactionModal
         isOpen={isModalOpen}
@@ -409,7 +463,6 @@ Kodaik            </p>
         isProcessing={isTransactionProcessing}
         isApproving={approvalProcessing}
       />
-
     </>
   );
 }

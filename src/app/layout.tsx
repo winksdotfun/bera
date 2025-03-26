@@ -14,22 +14,22 @@ const geistMono = Geist_Mono({
 });
 
 // Define base URL and player URL
-const baseUrl = "https://stbgt-stake.winks.fun";
-const playerUrl = "https://stbgt-stake.winks.fun"; 
+const baseUrl = "https://stake-honey.winks.fun";
+const playerUrl = "https://stake-honey.winks.fun"; 
 
 export const metadata: Metadata = {
-  title: " unlock and leverage your BGT with stBGT",
+  title: " unlock and leverage your HONEY",
   description: "Get the best yield in the Berachain ecosystem",
   metadataBase: new URL(baseUrl),
   openGraph: {
-    title: "unlock and leverage your BGT with stBGT",
+    title: "unlock and leverage your HONEY",
     description: "Get the best yield in the Berachain ecosystem",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
-    title: "unlock and leverage your BGT with stBGT",
+    title: "unlock and leverage your HONEY",
     description: "Get the best yield in the Berachain ecosystem",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
   },
