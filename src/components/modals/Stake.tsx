@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '../ui/button';
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import contractABI from "@/abi/contractABI.json";
-import approvalContractABI from "@/abi/stBGTcontractABI.json"
+import approvalContractABI from "@/abi/iBGTcontractABI.json"
 import { sepolia, berachain } from 'viem/chains';
 import { ethers } from 'ethers';
 
