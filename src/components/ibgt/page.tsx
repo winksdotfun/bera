@@ -12,9 +12,8 @@ import { Loader2 } from "lucide-react";
 import TransactionModal from "../modals/TransactionModal";
 
 
-interface Props { }
 
-const IBGTPage = ({ }: Props) => {
+const IBGTPage = () => {
   const [statsData, setStatsData] = useState(false);
   const [aprValue, setAprValue] = useState<number>();
   const [tvlvalue, setTvlValue] = useState<number>();
@@ -27,7 +26,7 @@ const IBGTPage = ({ }: Props) => {
   const [txCompleted, setTxCompleted] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [iBgtBalance, setiBgtBalance] = useState<any>();
+  const [iBgtBalance, setiBgtBalance] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winkpoints, setWinkpoints] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +57,7 @@ const IBGTPage = ({ }: Props) => {
         const data = await response.json();
 
         console.log("data", data);
-        const rewardToken = data.reward_tokens.find((token: any) => token.apr !== undefined);
+        const rewardToken = data.reward_tokens.find((token: {apr: string}) => token.apr !== undefined);
         console.log("apr", rewardToken ? rewardToken.apr : null)
         const APR = (rewardToken ? rewardToken.apr : null) * 100
         const iBGTPrice = data?.stake_token?.price;
@@ -112,11 +111,10 @@ const IBGTPage = ({ }: Props) => {
     }
   };
   
-
   useEffect(() => {
     fetchBalances();
     fetchWinkpoints();
-  }, [address]);
+  }, [address, isConnected]);
 
   const totalValue = isValidInput ? parseFloat(inputValue) * iBgtPrice : 0;
 
@@ -165,7 +163,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const handleStakeClick = async (amount: any) => {
+  const handleStakeClick = async () => {
     setErrorMessage("");
     setIsModalOpen(true);
     console.log(address, "amount", inputValue);
@@ -194,7 +192,7 @@ const IBGTPage = ({ }: Props) => {
           account: address as `0x${string}`,
         });
 
-        await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+        await publicClient?.waitForTransactionReceipt({ hash: approvalTx });
         setApprovalProcessing(false);
       }
 
@@ -210,7 +208,7 @@ const IBGTPage = ({ }: Props) => {
       });
 
       txHash = stakeTx;
-      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient?.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false);
       setTxHash(txHash);
 
@@ -275,7 +273,7 @@ const IBGTPage = ({ }: Props) => {
 
     try {
       // Fetch stMON balance
-      const iBgtBalance = await publicClient.readContract({
+      const iBgtBalance = await publicClient?.readContract({
         address: "0x4a254B11810B8EBb63C5468E438FC561Cb1bB1da",
         abi: [
           {
@@ -297,7 +295,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const formatTVL = (tvl: number) => (tvl / 1_000).toFixed(2);
+  const formatTVL = (tvl: number | undefined) => (tvl !== undefined ? (tvl / 1_000_000).toFixed(2) : "Loading...");
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;
 
 
@@ -418,7 +416,7 @@ const IBGTPage = ({ }: Props) => {
                 </p>
                 <div className="flex items-center space-x-2 border p-2 rounded-xl text-sm">
                   {/* <Image src="/images/info.svg" width={20} height={20} alt="info" /> */}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info size-4"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-info size-4"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
                   <p className="text-gray-600 text-sm">
                     Mint on Kodiak then stake your LP tokens here.
                   </p>
