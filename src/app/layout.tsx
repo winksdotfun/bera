@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 // Define base URL and player URL
-const baseUrl = "https://stake-honey.winks.fun";
-const playerUrl = "https://stake-honey.winks.fun"; 
+const baseUrl = "https://stake-honey-bex.winks.fun";
+const playerUrl = "https://stake-honey-bex.winks.fun"; 
 
 export const metadata: Metadata = {
   title: " Unlock and leverage your HONEY",
