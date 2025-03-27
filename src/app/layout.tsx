@@ -18,19 +18,19 @@ const baseUrl = "https://stake-honey.winks.fun";
 const playerUrl = "https://stake-honey.winks.fun"; 
 
 export const metadata: Metadata = {
-  title: " unlock and leverage your HONEY",
-  description: "Get the best yield in the Berachain ecosystem",
+  title: " Maximize WBERA-WBTC Yields: Stake & Earn",
+  description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
   metadataBase: new URL(baseUrl),
   openGraph: {
-    title: "unlock and leverage your HONEY",
-    description: "Get the best yield in the Berachain ecosystem",
+    title: "Maximize WBERA-WBTC Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
-    title: "unlock and leverage your HONEY",
-    description: "Get the best yield in the Berachain ecosystem",
+    title: "Maximize WBERA-WBTC Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   other: {
