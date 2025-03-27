@@ -77,8 +77,8 @@ export default function Home() {
     apr: "44.21%",
     poolValue: 282050,
     rewardType: "AMM",
-    rewardIcon: "/images/honey.svg",
-    tokenIcons: ["/path/to/icon1.svg", "/path/to/icon2.svg"],
+    rewardIcon: "https://ext.same-assets.com/569822123/336870244.png",
+    tokenIcons: [ "https://ext.same-assets.com/2446876795/1753465442.svg"],
     userBalance: "0.0",
     userBalanceLabel: "stBGT",
     beraPriceUSD: 15.5
