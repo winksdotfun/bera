@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 interface StakingCardProps {
   title: string;
   description: string;
-  apr: any;
+  apr: string;
   poolValue: number;
   rewardType: string;
   rewardIcon: string;

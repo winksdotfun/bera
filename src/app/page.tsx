@@ -58,7 +58,7 @@ export default function Home() {
   const apr = statsData.stbgt_staking_apr;
   const formattedApr = Number(apr).toFixed(2);
 
-  function formatToK(value: any) {
+  function formatToK(value: number) {
     if (value >= 1000) {
       return (value / 1000).toFixed(2) + 'K';
     }

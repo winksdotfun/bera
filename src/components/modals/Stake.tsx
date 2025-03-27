@@ -15,9 +15,9 @@ import TransactionModal from './TransactionModal';
 type Props = {
   onClose: () => void;
   beraPriceUSD: number;
-  stBgtBalance: any;
+  stBgtBalance: number;
   fetchWinkPoints: () => void;
-  setWinkPoints: any;
+  setWinkPoints: number
 };
 
 const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPoints }: Props) => {
@@ -59,7 +59,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
   const { address, isConnected } = useAccount();
 
 
-  const handleStakeClick = async (amount: any) => {
+  const handleStakeClick = async () => {
     setApprovalProcessing(true); 
     setErrorMessage("");
     setIsModalOpen(true);
@@ -148,7 +148,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
       console.log("Points updated:", data);
   
       // ✅ Fetch updated Winkpoints after posting user address
-      setWinkpoints(0)
+      setWinkPoints(0)
       fetchWinkPoints();
     } catch (error) {
       console.error("Error updating points:", error);
