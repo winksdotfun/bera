@@ -18,19 +18,19 @@ const baseUrl = "https://stake-weth.winks.fun";
 const playerUrl = "https://stake-weth.winks.fun"; 
 
 export const metadata: Metadata = {
-  title: " unlock and leverage your WETH",
-  description: "Get the best yield in the Berachain ecosystem",
+  title: " Maximize WBERA-WETH Yields: Stake & Earn",
+  description: "Unlock high-yield opportunities by staking WBERA-WETH within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
   metadataBase: new URL(baseUrl),
   openGraph: {
-    title: "unlock and leverage your WETH",
-    description: "Get the best yield in the Berachain ecosystem",
+    title: "Maximize WBERA-WETH Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WETH within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
-    title: "unlock and leverage your WETH",
-    description: "Get the best yield in the Berachain ecosystem",
+    title: "Maximize WBERA-WETH Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WETH within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
     images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   other: {
