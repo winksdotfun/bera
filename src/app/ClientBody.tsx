@@ -41,8 +41,8 @@ export default function ClientBody({
     <body className={cn("antialiased", className)} suppressHydrationWarning>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider chains={[berachain]}>
-          {/* <ReferrerTracker /> */}
+          <RainbowKitProvider >
+            {/* <ReferrerTracker /> */}
             {children}
           </RainbowKitProvider>
         </QueryClientProvider>
