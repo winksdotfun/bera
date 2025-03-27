@@ -73,15 +73,15 @@ export default function Home() {
 
   const stakeStBGTData = {
     title: "Stake stBGT",
-    description: "Stake your stBGT and earn rewards",
-    apr: "44.21%",
-    poolValue: 282050,
-    rewardType: "AMM",
+    description: "Stake stBGT to earn HONEY staking rewards. Withdraw stBGT at any time.",
+    apr: formattedApr,
+    poolValue: formattedPoolValue,
+    rewardType: "HONEY",
     rewardIcon: "https://ext.same-assets.com/569822123/336870244.png",
     tokenIcons: [ "https://ext.same-assets.com/2446876795/1753465442.svg"],
     userBalance: "0.0",
-    userBalanceLabel: "stBGT",
-    beraPriceUSD: 15.5
+    userBalanceLabel: "Your staked balance",
+    beraPriceUSD: statsData.bera_price_usd
   };
 
   return (
