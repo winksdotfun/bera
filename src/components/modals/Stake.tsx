@@ -11,16 +11,15 @@ import { ethers } from 'ethers';
 import CustomButton from '@/provider/Wallet';
 import TransactionModal from './TransactionModal';
 
-
-type Props = {
+interface StakeModalProps {
   onClose: () => void;
-  beraPriceUSD: number;
-  stBgtBalance: number;
   fetchWinkPoints: () => void;
-  setWinkPoints: number
-};
+  setWinkPoints: (points: number) => void;
+  beraPriceUSD: number;
+  stBgtBalance: string;
+}
 
-const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPoints }: Props) => {
+const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPoints }: StakeModalProps) => {
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
   const [insufficientBalance, setInsufficientBalance] = useState(false);
@@ -44,7 +43,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
 
   useEffect(() => {
     if (isValidInput) {
-      if (totalValue > stBgtBalance) {
+      if (totalValue > parseFloat(stBgtBalance)) {
         setInsufficientBalance(true);
       } else {
         setInsufficientBalance(false);
@@ -81,7 +80,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
         account: address as `0x${string}`,
       });
   
-      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+      await publicClient?.waitForTransactionReceipt({ hash: approvalTx });
       setApprovalProcessing(false); // Approval is done
   
       // After approval, execute the stake contract
@@ -96,7 +95,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
       });
   
       txHash = stakeTx;
-      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient?.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false); // Transaction is done
       setTxHash(txHash);
 
@@ -148,7 +147,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance, fetchWinkPoints, setWinkPo
       console.log("Points updated:", data);
   
       // ✅ Fetch updated Winkpoints after posting user address
-      setWinkPoints(0)
+      setWinkPoints(0);
       fetchWinkPoints();
     } catch (error) {
       console.error("Error updating points:", error);

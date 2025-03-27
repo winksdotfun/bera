@@ -88,7 +88,7 @@ const StakingCard = ({
 
       try {
         // Fetch stMON balance
-        const stBgtBalance = await publicClient.readContract({
+        const stBgtBalance = await publicClient?.readContract({
           address: "0x2CeC7f1ac87F5345ced3D6c74BBB61bfAE231Ffb",
           abi: [
             {
@@ -112,7 +112,7 @@ const StakingCard = ({
 
     fetchBalances();
     fetchWinkpoints();
-  }, [address]);
+  }, [address, fetchWinkpoints, publicClient]);
 
   return (
     <Card className="gradient-border overflow-hidden">
@@ -184,10 +184,9 @@ const StakingCard = ({
 
       {isModalOpen &&
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <StakeModal onClose={onClose} fetchWinkPoints={fetchWinkpoints} setWinkPoints={setWinkpoints} beraPriceUSD={beraPriceUSD} stBgtBalance={stBgtBalance} />
+        <StakeModal onClose={onClose} fetchWinkPoints={fetchWinkpoints} setWinkPoints={(points: number) => setWinkpoints(points)} beraPriceUSD={beraPriceUSD} stBgtBalance={stBgtBalance} />
       </div>
       }
-     
 
     </Card>
   );
