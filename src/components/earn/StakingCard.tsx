@@ -11,7 +11,7 @@ interface StakingCardProps {
   title: string;
   description: string;
   apr: string;
-  poolValue: number;
+  poolValue: string;
   rewardType: string;
   rewardIcon: string;
   tokenIcons: string[];
