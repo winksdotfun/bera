@@ -37,6 +37,7 @@ export const metadata: Metadata = {
     "twitter:player": playerUrl,
     "twitter:player:width": "360",
     "twitter:player:height": "560",
+    
   },
   icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"
 };
