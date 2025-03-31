@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Set force-static for static exports
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export async function GET() {
   try {
     const response = await fetch("https://infrared.finance/api/vault/infrared-ibgt-v2?chainId=80094");
