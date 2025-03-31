@@ -12,12 +12,20 @@ import { Loader2 } from "lucide-react";
 import TransactionModal from "../modals/TransactionModal";
 
 
-interface Props { }
 
-const IBGTPage = ({ }: Props) => {
+interface Token {
+  symbol: string;
+  price: number;
+}
+
+interface RewardToken {
+  apr?: number; // Assuming `apr` can be undefined
+}
+
+const IBGTPage = () => {
   const [statsData, setStatsData] = useState(false);
   const [aprValue, setAprValue] = useState<number>();
-  const [tvlvalue, setTvlValue] = useState<number>();
+  const [tvlvalue, setTvlValue] = useState<number>(0);
   const [iBgtPrice, setiBgtPrice] = useState<number>(0);
   const [inputValue, setInputValue] = useState('');
   const [isValidInput, setIsValidInput] = useState(false);
@@ -27,7 +35,7 @@ const IBGTPage = ({ }: Props) => {
   const [txCompleted, setTxCompleted] = useState(false);
   const [txHash, setTxHash] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [iBgtBalance, setiBgtBalance] = useState<any>();
+  const [iBgtBalance, setiBgtBalance] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winkpoints, setWinkpoints] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,10 +63,10 @@ const IBGTPage = ({ }: Props) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        const rewardToken = data.reward_tokens.find((token: any) => token.apr !== undefined);
+        const rewardToken = data.reward_tokens.find((token: RewardToken) => token.apr !== undefined);
         console.log("apr", rewardToken ? rewardToken.apr : null)
         const APR = (rewardToken ? rewardToken.apr : null) * 100
-        const iBGTPrice = data.underlying_tokens.find(token => token.symbol === "iBGT")?.price;
+        const iBGTPrice = data.underlying_tokens.find((token: Token) => token.symbol === "iBGT")?.price;
         setiBgtPrice(iBGTPrice)
         setAprValue(APR);
         setTvlValue(data.tvl)
@@ -108,16 +116,13 @@ const IBGTPage = ({ }: Props) => {
   };
   
 
-  useEffect(() => {
-    fetchBalances();
-    fetchWinkpoints();
-  }, [address]);
+  
 
   const totalValue = isValidInput ? parseFloat(inputValue) * iBgtPrice : 0;
 
   useEffect(() => {
     if (isValidInput) {
-      if (totalValue > iBgtBalance) {
+      if (totalValue > parseFloat(iBgtBalance)) {
         setInsufficientBalance(true);
       } else {
         setInsufficientBalance(false);
@@ -157,7 +162,7 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
-  const handleStakeClick = async (amount: any) => {
+  const handleStakeClick = async () => {
     setErrorMessage("");
     setIsModalOpen(true);
     console.log(address, "amount", inputValue);
@@ -186,7 +191,7 @@ const IBGTPage = ({ }: Props) => {
           account: address as `0x${string}`,
         });
 
-        await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+        await publicClient?.waitForTransactionReceipt({ hash: approvalTx });
         setApprovalProcessing(false);
       }
 
@@ -202,7 +207,7 @@ const IBGTPage = ({ }: Props) => {
       });
 
       txHash = stakeTx;
-      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient?.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false);
       setTxHash(txHash);
 
@@ -262,12 +267,13 @@ const IBGTPage = ({ }: Props) => {
     }
   };
 
+  useEffect(() => {
+
   const fetchBalances = async () => {
-    if (!address) return;
+    if (!address || ! publicClient) return;
 
     try {
-      // Fetch stMON balance
-      const iBgtBalance = await publicClient.readContract({
+      const iBgtBalance = await publicClient?.readContract({
         address: "0xac03CABA51e17c86c921E1f6CBFBdC91F8BB2E6b",
         abi: [
           {
@@ -288,6 +294,14 @@ const IBGTPage = ({ }: Props) => {
       console.error("Error fetching balances:", error);
     }
   };
+  fetchBalances();
+}, [address, publicClient]);
+
+
+  useEffect(() => {
+    // fetchBalances();
+    fetchWinkpoints();
+  }, [address, fetchWinkpoints, publicClient]);
 
   const formatTVL = (tvl: number) => (tvl / 1_000_000).toFixed(2);
   const buttonDisabled = !isValidInput || insufficientBalance || isTransactionProcessing || approvalProcessing;

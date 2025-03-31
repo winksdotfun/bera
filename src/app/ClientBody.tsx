@@ -2,17 +2,12 @@
 
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
-
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import {
-  ConnectButton,
-  getDefaultConfig,
-  RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { berachain } from "wagmi/chains";
 import { ReferrerTracker } from "./referrerTracker";
-
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 
 export default function ClientBody({
   children,
@@ -21,16 +16,16 @@ export default function ClientBody({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Remove any extension-added classes during hydration
+
   useEffect(() => {
-    // This runs only on the client after hydration
+
     document.body.className = "antialiased";
   }, []);
 
   const config = getDefaultConfig({
     appName: "My RainbowKit App",
-    projectId: "YOUR_PROJECT_ID",
-    chains: [berachain],
+    projectId: "YOUR_PROJECT_ID", // Replace with actual project ID
+    chains: [berachain], // Chain configuration stays here
     ssr: true,
   });
 
@@ -41,8 +36,8 @@ export default function ClientBody({
     <body className={cn("antialiased", className)} suppressHydrationWarning>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider chains={[berachain]}>
-          {/* <ReferrerTracker /> */}
+          <RainbowKitProvider> 
+            {/* <ReferrerTracker /> */}
             {children}
           </RainbowKitProvider>
         </QueryClientProvider>

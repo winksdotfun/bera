@@ -14,24 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 // Define base URL and player URL
-const baseUrl = "https://stbgt-stake.winks.fun";
-const playerUrl = "https://stbgt-stake.winks.fun"; 
+const baseUrl = "https://ibgt-stake.winks.fun";
+const playerUrl = "https://ibgt-stake.winks.fun"; 
 
 export const metadata: Metadata = {
-  title: " unlock and leverage your BGT with stBGT",
+  title: " unlock and leverage your BGT with iBGT",
   description: "Get the best yield in the Berachain ecosystem",
   metadataBase: new URL(baseUrl),
   openGraph: {
-    title: "unlock and leverage your BGT with stBGT",
+    title: "unlock and leverage your BGT with iBGT",
     description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
-    title: "unlock and leverage your BGT with stBGT",
+    title: "unlock and leverage your BGT with iBGT",
     description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   other: {
     "twitter:player": playerUrl,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     "twitter:player:height": "560",
     
   },
-  icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"
+  icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"
 };
 
 export default function RootLayout({
