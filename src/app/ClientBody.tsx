@@ -34,7 +34,7 @@ export default function ClientBody({
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider> 
-            {/* <ReferrerTracker /> */}
+            <ReferrerTracker />
             {children}
           </RainbowKitProvider>
         </QueryClientProvider>
