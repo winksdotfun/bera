@@ -13,7 +13,7 @@ import { ethers } from 'ethers';
 type Props = {
   onClose: () => void;
   beraPriceUSD: number;
-  stBgtBalance: any;
+  stBgtBalance: string;
 };
 
 const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
@@ -39,7 +39,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
 
   useEffect(() => {
     if (isValidInput) {
-      if (totalValue > stBgtBalance) {
+      if (totalValue > parseFloat(stBgtBalance)) {
         setInsufficientBalance(true);
       } else {
         setInsufficientBalance(false);
@@ -54,7 +54,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
   const { address } = useAccount();
 
 
-  const handleStakeClick = async (amount: any) => {
+  const handleStakeClick = async () => {
     setApprovalProcessing(true); 
     setErrorMessage("");
     console.log(address, "amount", inputValue);
@@ -75,7 +75,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
         account: address as `0x${string}`,
       });
   
-      await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+      await publicClient?.waitForTransactionReceipt({ hash: approvalTx });
       setApprovalProcessing(false); // Approval is done
   
       // After approval, execute the stake contract
@@ -90,7 +90,7 @@ const Stake = ({ onClose, beraPriceUSD, stBgtBalance }: Props) => {
       });
   
       txHash = stakeTx;
-      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient?.waitForTransactionReceipt({ hash: stakeTx });
       setIsTransactionProcessing(false); // Transaction is done
       setTxHash(txHash);
     } catch (error) {
