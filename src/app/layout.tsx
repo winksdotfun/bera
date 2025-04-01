@@ -14,31 +14,31 @@ const geistMono = Geist_Mono({
 });
 
 // Define base URL and player URL
-const baseUrl = "https://stake-honey.winks.fun";
-const playerUrl = "https://stake-honey.winks.fun"; 
+const baseUrl = "https://stake-wbtc.winks.fun";
+const playerUrl = "https://stake-wbtc.winks.fun"; 
 
 export const metadata: Metadata = {
-  title: " unlock and leverage your HONEY",
-  description: "Get the best yield in the Berachain ecosystem",
+  title: " Maximize WBERA-WBTC Yields: Stake & Earn",
+  description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
   metadataBase: new URL(baseUrl),
   openGraph: {
-    title: "unlock and leverage your HONEY",
-    description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
+    title: "Maximize WBERA-WBTC Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   twitter: {
     card: "player",
     site: "@winksdotfun",
-    title: "unlock and leverage your HONEY",
-    description: "Get the best yield in the Berachain ecosystem",
-    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"],
+    title: "Maximize WBERA-WBTC Yields: Stake & Earn",
+    description: "Unlock high-yield opportunities by staking WBERA-WBTC within the Berachain ecosystem. Securely grow your assets and maximize your returns.",
+    images: ["https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"],
   },
   other: {
     "twitter:player": playerUrl,
     "twitter:player:width": "360",
     "twitter:player:height": "560",
   },
-  icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742804328/leahihjrh1xkueul2c12.png"
+  icons: "https://res.cloudinary.com/dvddnptpi/image/upload/v1742994167/txit82q12lduhy6x6wsc.png"
 };
 
 export default function RootLayout({
