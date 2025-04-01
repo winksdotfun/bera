@@ -58,14 +58,14 @@ const IBGTPage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch("/api/proxy"); // Use Next.js proxy API
+        const response = await fetch("/api/proxy");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        
         const data = await response.json();
-        const rewardToken = data.reward_tokens.find((token: RewardToken) => token.apr !== undefined);
-        console.log("apr", rewardToken ? rewardToken.apr : null)
-        const APR = (rewardToken ? rewardToken.apr : null) * 100
+        const rewardToken = data.apr;
+        const APR = rewardToken * 100
         const iBGTPrice = data.underlying_tokens.find((token: Token) => token.symbol === "iBGT")?.price;
         setiBgtPrice(iBGTPrice)
         setAprValue(APR);
@@ -349,7 +349,7 @@ const IBGTPage = () => {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <div className="text-sm opacity-80">APR</div>
-                <div className="text-xl font-medium">{aprValue?.toFixed(2)}%</div>
+                <div className="text-xl font-medium">{aprValue?.toFixed(0)}%</div>
               </div>
               <div>
                 <div className="text-sm opacity-80">TVL</div>

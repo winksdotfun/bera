@@ -1,17 +1,38 @@
 import { NextResponse } from "next/server";
 
-// Set force-static for static exports
-export const dynamic = 'force-static';
+// These configs are required for static export
+export const dynamic = "force-static";
 export const revalidate = false;
 
 export async function GET() {
   try {
-    const response = await fetch("https://infrared.finance/api/vault/infrared-ibgt-v2?chainId=80094");
+    console.log("Fetching data from infrared.finance, in proxy");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(
+      "https://infrared.finance/api/vault/infrared-ibgt?chainId=80094",
+      {
+        signal: controller.signal,
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "Mozilla/5.0"
+        }
+      }
+    );
+
+    console.log("Response received from infrared.finance");
+    console.log(response);
+    
+    clearTimeout(timeoutId);
+    
     if (!response.ok) {
-      throw new Error("Failed to fetch data");
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log("Data fetched successfully");
+    
     return NextResponse.json(data, {
       headers: {
         "Access-Control-Allow-Origin": "*", 
@@ -20,9 +41,21 @@ export async function GET() {
       },
     });
   } catch (error) {
+    console.error("Proxy API error:", error);
+    
+    // Return error without hardcoded data
     return NextResponse.json(
-      { message: "Error fetching data", error: (error as Error).message },
-      { status: 500 }
+      { 
+        message: "Error fetching data", 
+        error: error instanceof Error ? error.message : String(error)
+      },
+      { 
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        }
+      }
     );
   }
 }

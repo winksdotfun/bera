@@ -4,7 +4,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS"); 
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+  console.log("Fetching data from infrared.finance");
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
